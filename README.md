@@ -53,7 +53,7 @@ Here is a playbook using an internal GitLab server with the `pull.yml` playbook.
 
       roles:
         - samdoran.repo_epel
-        - samdoarn.ansible_pull
+        - samdoran.ansible_pull
 
 License
 -------
