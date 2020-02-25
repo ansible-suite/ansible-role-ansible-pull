@@ -1,7 +1,11 @@
-ansible_pull_workdir: "/var/lib/ansible/local"
-ansible_pull_repo: "https://gitub.com/foo/bar.git"
-ansible_pull_playbook: "{{ ansible_pull_workdir }}/site.yml"
-ansible_pull_logfile: "/var/log/ansible-pull.log"
+ansible_pull_workdir: /var/lib/ansible/local
+ansible_pull_venv_dir: /var/lib/ansible/.venv
+ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
+ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
+ansible_pull_logfile: /var/log/ansible-pull.log
+ansible_pull_pip_packages:
+    - ansible
+ansible_pull_user: root
 
 ansible_pull_vault_password_file: "/root/.vault"
 # ansible_pull_vault_password: "SuperSecretKey"
@@ -15,10 +19,19 @@ ansible_pull_vault_password_file: "/root/.vault"
 #     state: present
 #     key: "foo.acme.com ssh-rsa AAAAB3NzaC1...
 
-ansible_pull_cron:
-  - name: "run ansible-pull"
+ansible_pull_cron_jobs:
+  - name: run ansible-pull
     hour: "*"
     minute: "*/10"
     day: "*"
     state: present
-    job: "ansible-pull --accept-host-key -d {{ ansible_pull_workdir }} --full -o -U {{ ansible_pull_repo }} {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %} {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}"
+    cron_file: ansible-pull
+    job: >
+      "{{ ansible_pull_venv_dir }}/bin/ansible-pull
+      --accept-host-key
+      --dest {{ ansible_pull_workdir }}
+      --full
+      --only-if-changed
+      --url {{ ansible_pull_repo }}
+      {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
+      {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}"

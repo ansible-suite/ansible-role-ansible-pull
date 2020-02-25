@@ -1,29 +1,28 @@
 - name: Include distribution specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_facts.distribution }}-{{ ansible_facts.distribution_version }}.yml"
+        - "{{ ansible_facts.os_family }}-{{ ansible_facts.distribution_major_version }}.yml"
+        - "{{ ansible_facts.distribution }}.yml"
+        - "{{ ansible_facts.os_family }}.yml"
+        - default.yml
+      paths:
+        - "{{ role_path }}/vars"
   tags:
     - ansible_pull
-    - ansible_pull_cron
+    - ansible_pull_scheduler
     - packages
     - yum
     - apt
 
-- include: "install-{{ ansible_os_family }}.yml"
+- include_tasks: "install-{{ ansible_os_family }}.yml"
   tags:
     - ansible_pull
     - packages
     - yum
     - apt
-
-- name: Install Python packages
-  pip:
-    name: "{{ item }}"
-    state: latest
-  loop:
-    - jinja2
-  tags:
-    - ansible_pull
-    - packages
-    - pip
 
 - name: Create directory for Ansible repository
   file:
@@ -34,6 +33,27 @@
     mode: '0700'
   tags:
     - ansible_pull
+
+- name: Upgrade pip inside virtual environment
+  pip:
+    name: pip
+    state: latest
+    virtualenv: /var/lib/ansible/.venv
+  tags:
+    - ansible_pull
+    - packages
+    - pip
+
+- name: Install Python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: /var/lib/ansible/.venv
+  loop: "{{ ansible_pull_pip_packages }}"
+  tags:
+    - ansible_pull
+    - packages
+    - pip
 
 - name: Copy logrotate settings
   template:
@@ -113,16 +133,16 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Start and enable cron
+- name: Start and enable {{ ansible_pull_scheduler }}
   service:
-    name: "{{ cron_service }}"
-    enabled: true
+    name: "{{ ansible_pull_scheduler }}"
+    enabled: yes
     state: started
   tags:
     - ansible_pull
-    - ansible_pull_cron
+    - ansible_pull_scheduler
 
-- name: Create cron job to run ansible-pull
+- name: Create job to run ansible-pull
   cron:
     name: "{{ item.name }}"
     minute: "{{ item.minute }}"
@@ -130,10 +150,13 @@
     day: "{{ item.day }}"
     job: "{{ item.job }}"
     state: "{{ item.state }}"
-  loop: "{{ ansible_pull_cron }}"
+    cron_file: "{{ item.cron_file | default(omit) }}"
+    user: "{{ ansible_pull_user }}"
+  loop: "{{ ansible_pull_cron_jobs }}"
+  when: "'cron' in ansible_pull_scheduler"
   tags:
     - ansible_pull
-    - ansible_pull_cron
+    - ansible_pull_scheduler
 
 - name: Display ssh pulic key
   debug:

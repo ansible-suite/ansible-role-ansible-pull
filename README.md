@@ -3,7 +3,7 @@ Ansible Pull
 [![Build Status](https://travis-ci.org/samdoran/ansible-role-ansible-pull.svg?branch=master)](https://travis-ci.org/samdoran/ansible-role-ansible-pull)
 [![Galaxy](https://img.shields.io/badge/galaxy-samdoran.ansible_pull-blue.svg?style=flat)](https://galaxy.ansible.com/samdoran/ansible_pull)
 
-Use `ansible` in push mode to configure a remote machine to run `ansible-pull` as `root` on a schedule.
+Configure a remote machine to run `ansible-pull` on a schedule. `ansible` will be installed on the managed node in a virtual environment using `pip`.
 
 Requirements
 ------------
@@ -14,19 +14,21 @@ Requirements
 Role Variables
 --------------
 
-At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook repostiory lives as well as the `ansible_pull_playbook` to run.
+At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook repository lives as well as the `ansible_pull_playbook` to run.
 
 | Name              | Default Value       | Description          |
 |-------------------|---------------------|----------------------|
 | `ansible_pull_workdir` | `/var/lib/ansible/local` | Directory where repository is cloned. |
-| `ansible_pull_repo` | `https://github.com/samdoran/` | Remote repository to clone when running `ansible-pull`. |
-| `ansible_pull_playbook` | `{{ ansible_pull_workdir }}/site.yml` | Playbook to run with `ansible-pull`. |
+| `ansible_pull_repo` | `https://github.com/samdoran/demo-playbooks.git` | Remote repository to clone when running `ansible-pull`. |
+| `ansible_pull_playbook` | `{{ ansible_pull_workdir }}/hello.yml` | Playbook to run with `ansible-pull`. |
 | `ansible_pull_logfile` | `/var/log/ansible-pull.log` | Where to log output from `ansible-pull`. Also gets rotated. |
-| `ansible_pull_vault_password_file` | `/root/.vault` | File to hold Ansible vault key. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts.** |
-| `ansible_pull_vault_password` | `SuperSecretKey` | Vault key, in plain text, that will be inserted int `ansible_pull_vault_password_file`. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts.** |
-| `ansible_pull_ssh_private_key` | [see `defaults/main.yml`] | Optionally define an SSH private key that will be installed for `root` on the remote host. If this is not defined, a new key will be generated and the pubil SSH key will be output at the end of the play. |
+| `ansible_pull_vault_password_file` | `/root/.vault` | File to hold Ansible vault key. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
+| `ansible_pull_vault_password` | `SuperSecretKey` | Vault key, in plain text, that will be inserted int `ansible_pull_vault_password_file`. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
+| `ansible_pull_ssh_private_key` | [see `defaults/main.yml`] | Optionally define an SSH private key that will be installed for `root` on the remote host. If this is not defined, a new key will be generated and the public SSH key will be output at the end of the play. |
 | `ansible_known_hosts` | `[]` | List of SSH host keys to add to `/root/.ssh/known_hosts`. |
-| `ansible_pull_cron` | [see `defaults/main.yml`] | Cron configuration for job that runs `ansible-pull`. The default settings run `ansible-pull` every ten minutes. |
+| `ansible_pull_cron_jobs` | [see `defaults/main.yml`] | Cron configuration for jobs that run `ansible-pull`. The default settings run `ansible-pull` every ten minutes. |
+| `ansible_pull_user` | `root` | User that will run `ansible-pull`. |
+| `ansible_pull_pip_packages` | `['ansible']` | List of Python packages to install in the virtual environment. |
 
 
 Dependencies

@@ -1,9 +1,7 @@
 - name: RHEL | Install needed packages
   yum:
-    name: "{{ item }}"
+    name: "{{ ansible_pull_packages }}"
     state: latest
-    enablerepo: epel-testing
-  loop: "{{ ansible_pull_packages }}"
   tags:
     - ansible_pull
     - packages

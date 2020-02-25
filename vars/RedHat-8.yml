@@ -1,5 +1,5 @@
 ansible_pull_scheduler: crond
 ansible_pull_packages:
-  - python-pip
-  - python-virtualenv
+  - python3-pip
+  - python3-virtualenv
   - git
