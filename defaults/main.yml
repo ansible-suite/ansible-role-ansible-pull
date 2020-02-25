@@ -4,7 +4,7 @@ ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
 ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
 ansible_pull_logfile: /var/log/ansible-pull.log
 ansible_pull_pip_packages:
-    - ansible
+  - ansible
 ansible_pull_user: root
 
 ansible_pull_vault_password_file: "/root/.vault"
