@@ -1,6 +1,5 @@
 Ansible Pull
 =========
-[![Build Status](https://travis-ci.org/samdoran/ansible-role-ansible-pull.svg?branch=master)](https://travis-ci.org/samdoran/ansible-role-ansible-pull)
 [![Galaxy](https://img.shields.io/badge/galaxy-samdoran.ansible_pull-blue.svg?style=flat)](https://galaxy.ansible.com/samdoran/ansible_pull)
 
 Configure a remote machine to run `ansible-pull` on a schedule. `ansible` will be installed on the managed node in a virtual environment using `pip`.
