@@ -17,7 +17,7 @@
     - yum
     - apt
 
-- include_tasks: "install-{{ ansible_os_family }}.yml"
+- include_tasks: "install-{{ ansible_facts.os_family }}.yml"
   tags:
     - ansible_pull
     - packages
