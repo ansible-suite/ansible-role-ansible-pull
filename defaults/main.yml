@@ -27,11 +27,11 @@ ansible_pull_cron_jobs:
     state: present
     cron_file: ansible-pull
     job: >
-      "{{ ansible_pull_venv_dir }}/bin/ansible-pull
+      {{ ansible_pull_venv_dir }}/bin/ansible-pull
       --accept-host-key
       --dest {{ ansible_pull_workdir }}
       --full
       --only-if-changed
       --url {{ ansible_pull_repo }}
       {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
-      {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}"
+      {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
