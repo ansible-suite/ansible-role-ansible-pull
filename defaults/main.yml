@@ -29,7 +29,7 @@ ansible_pull_cron_jobs:
     job: >
       {{ ansible_pull_venv_dir }}/bin/ansible-pull
       --accept-host-key
-      --dest {{ ansible_pull_workdir }}
+      --directory {{ ansible_pull_workdir }}
       --full
       --only-if-changed
       --url {{ ansible_pull_repo }}
