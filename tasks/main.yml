@@ -158,7 +158,7 @@
     - ansible_pull
     - ansible_pull_scheduler
 
-- name: Display ssh pulic key
+- name: Display SSH public key
   debug:
     msg: "Here is the public key that needs to be placed on the remote git server: {{ _ssh_key_generation.ssh_public_key }}"
   when: _ssh_key_generation is changed
