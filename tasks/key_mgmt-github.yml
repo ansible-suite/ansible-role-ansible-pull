@@ -18,5 +18,5 @@
       headers:
         Authorization: "token {{ ansible_pull_ssh_github_token }}"
       body_format: json
-      body: '{"title": "Ansible deploy key for {{ ansible_hostname }}", "key": "{{ _ssh_key_generation }}" }'
+      body: '{"title": "Ansible deploy key for {{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}" }'
       status_code: 201
