@@ -161,7 +161,13 @@
 - name: Display SSH public key
   debug:
     msg: "Here is the public key that needs to be placed on the remote git server: {{ _ssh_key_generation.ssh_public_key }}"
-  when: _ssh_key_generation is changed
+  when: _ssh_key_generation is changed and ansible_pull_ssh_key_mgmt is not defined
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+
+- include_tasks: key_mgmt-{{ ansible_pull_ssh_key_mgmt }}.yml
+  when: _ssh_key_generation is changed and ansible_pull_ssh_key_mgmt is defined
   tags:
     - ansible_pull
     - ansible_pull_ssh

@@ -1,0 +1,22 @@
+- name: Extract components from GitHub URL
+  set_fact:
+    ansible_pull_ssh_github_url_components: "{{ ansible_pull_repo | urlsplit }}"
+        
+- name: Split path components from parsed GitHub URL
+  set_fact:
+    ansible_pull_ssh_github_path_components: "{{ ansible_pull_ssh_github_url_components.path | split('/') }}"
+    
+- name: Extract USERNAME and REPO
+  set_fact:
+    ansible_pull_ssh_github_username: "{{ ansible_pull_ssh_github_path_components[1] }}"
+    ansible_pull_ssh_github_repo: "{{ ansible_pull_ssh_github_path_components[2] }}"
+
+- name: Upload SSH public key to GitHub repository
+    uri:
+      url: https://api.github.com/repos/{{ ansible_pull_ssh_github_username }}/{{ ansible_pull_ssh_github_repo }}/keys
+      method: POST
+      headers:
+        Authorization: "token {{ ansible_pull_ssh_github_token }}"
+      body_format: json
+      body: '{"title": "Ansible deploy key for {{ ansible_hostname }}", "key": "{{ _ssh_key_generation }}" }'
+      status_code: 201
