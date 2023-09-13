@@ -1,6 +1,7 @@
 Ansible Pull
 =========
-[![Galaxy](https://img.shields.io/badge/galaxy-samdoran.ansible_pull-blue.svg?style=flat)](https://galaxy.ansible.com/samdoran/ansible_pull)
+
+* This repo is a fork of https://github.com/samdoran/ansible-role-ansible-pull. The rest of README.md is unchanged *
 
 Configure a remote machine to run `ansible-pull` on a schedule. `ansible` will be installed on the managed node in a virtual environment using `pip`.
 
