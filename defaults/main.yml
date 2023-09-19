@@ -6,6 +6,7 @@ ansible_pull_logfile: /var/log/ansible-pull.log
 ansible_pull_pip_packages:
   - ansible
 ansible_pull_user: root
+ansible_pull_only_if_changed: true
 
 ansible_pull_vault_password_file: "/root/.vault"
 # ansible_pull_vault_password: "SuperSecretKey"
@@ -31,7 +32,7 @@ ansible_pull_cron_jobs:
       --accept-host-key
       --directory {{ ansible_pull_workdir }}
       --full
-      --only-if-changed
+      {%if ansible_pull_only_if_changed is true %}--only-if-changed{% endif %}
       --url {{ ansible_pull_repo }}
       {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
       {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
