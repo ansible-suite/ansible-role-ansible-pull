@@ -167,7 +167,7 @@
     - ansible_pull_ssh
 
 - include_tasks: key_mgmt-{{ ansible_pull_ssh_key_mgmt }}.yml
-  when: ansible_pull_ssh_key_mgmt is defined
+  when: _ssh_key_generation is not skipped and ansible_pull_ssh_key_mgmt is defined
   tags:
     - ansible_pull
     - ansible_pull_ssh
