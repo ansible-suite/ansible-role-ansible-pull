@@ -38,3 +38,4 @@ ansible_pull_cron_jobs:
       {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
 
 ansible_pull_ssh_github_parse_pattern: 'github\.com[/:]([^/]+)/((?:(?!\.git/?|/).)+)(?:\.git)?/?$'
+ansible_pull_ssh_gitlab_parse_pattern: '(?:git@|https://)([^/]*)[/:]([^/]+/(?:(?!\.git/?|/).)+)(?:\.git)?/?$'

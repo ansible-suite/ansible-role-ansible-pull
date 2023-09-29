@@ -1,0 +1,37 @@
+- name: Extract GitLab repo path components
+  set_fact:
+    _gitlab_url_components: "{{ ansible_pull_repo | regex_findall(ansible_pull_ssh_gitlab_parse_pattern) | first | list }}"
+
+- name: Get GitLab API URL
+  set_fact:
+    _gitlab_keys_api_url: https://{{ _gitlab_url_components[0] }}/api/v4/projects/{{ _gitlab_url_components[1] | urlencode | regex_replace('/', '%2F') }}/deploy_keys
+
+- name: Retrieve list of existing deploy keys
+  uri:
+    url: "{{ _gitlab_keys_api_url }}"
+    method: GET
+    headers:
+      PRIVATE-TOKEN: "{{ ansible_pull_ssh_gitlab_token }}"
+    return_content: yes
+    validate_certs: no
+  register: _existing_deploy_keys
+  ignore_errors: yes
+  delegate_to: 127.0.0.1
+
+- name: Test whether SSH public key is present in the list of existing deploy keys
+  set_fact:
+    _deploy_key_exists: "{{ _existing_deploy_keys.content | from_json | selectattr('key', '==', _ssh_key_generation.ssh_public_key | regex_search('^[^=]+= [^ ]+') ) | list | length > 0 }}"
+  delegate_to: 127.0.0.1
+
+- name: Upload SSH public key to GitHub repository
+  uri:
+    url: "{{ _gitlab_keys_api_url }}"
+    method: POST
+    headers:
+      PRIVATE-TOKEN: "{{ ansible_pull_ssh_gitlab_token }}"
+    body_format: json
+    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}" }'
+    status_code: 201
+  register: _ssh_key_upload
+  changed_when: _ssh_key_upload.status == 201
+  when: not _deploy_key_exists
