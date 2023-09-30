@@ -34,6 +34,7 @@ ansible_pull_cron_jobs:
       --full
       {%if ansible_pull_only_if_changed is true %}--only-if-changed{% endif %}
       --url {{ ansible_pull_repo }}
+      {%if ansible_pull_branch is defined %}--checkout {{ ansible_pull_branch }}{% endif %}
       {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
       {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
 
