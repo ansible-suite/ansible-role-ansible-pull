@@ -34,7 +34,7 @@
       Authorization: "Bearer {{ ansible_pull_ssh_github_token }}"
       X-GitHub-Api-Version: "2022-11-28"
     body_format: json
-    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}" }'
+    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "read_only": "true"}'
     status_code: 201
   register: _ssh_key_upload
   changed_when: _ssh_key_upload.status == 201
