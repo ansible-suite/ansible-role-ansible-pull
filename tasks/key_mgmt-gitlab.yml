@@ -23,14 +23,14 @@
     _deploy_key_exists: "{{ _existing_deploy_keys.content | from_json | selectattr('key', '==', _ssh_key_generation.ssh_public_key | regex_search('^[^=]+= [^ ]+') ) | list | length > 0 }}"
   delegate_to: 127.0.0.1
 
-- name: Upload SSH public key to GitHub repository
+- name: Upload SSH public key to GitLab repository
   uri:
     url: "{{ _gitlab_keys_api_url }}"
     method: POST
     headers:
       PRIVATE-TOKEN: "{{ ansible_pull_ssh_gitlab_token }}"
     body_format: json
-    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}" }'
+    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "can_push": "false" }'
     status_code: 201
   register: _ssh_key_upload
   changed_when: _ssh_key_upload.status == 201
