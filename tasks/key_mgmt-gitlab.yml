@@ -15,7 +15,6 @@
     return_content: yes
     validate_certs: no
   register: _existing_deploy_keys
-  ignore_errors: yes
   delegate_to: 127.0.0.1
 
 - name: Test whether SSH public key is present in the list of existing deploy keys
