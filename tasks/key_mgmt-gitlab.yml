@@ -29,7 +29,7 @@
     headers:
       PRIVATE-TOKEN: "{{ ansible_pull_ssh_gitlab_token }}"
     body_format: json
-    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "can_push": "false" }'
+    body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "can_push": false }'
     status_code: 201
   register: _ssh_key_upload
   changed_when: _ssh_key_upload.status == 201
