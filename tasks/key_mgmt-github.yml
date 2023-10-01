@@ -36,5 +36,6 @@
     body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "read_only": true}'
     status_code: 201
   register: _ssh_key_upload
+  delegate_to: 127.0.0.1
   changed_when: _ssh_key_upload.status == 201
   when: not _deploy_key_exists
