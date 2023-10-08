@@ -2,5 +2,5 @@
 Description={{ job.name }}
 
 [Service]
-ExecStart=/bin/bash -c {{ job.job }}
+ExecStart=/bin/bash -c '{{ job.job | regex_replace("\'", "\\'") }}'
 Type=oneshot

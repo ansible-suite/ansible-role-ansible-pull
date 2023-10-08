@@ -20,7 +20,7 @@ ansible_pull_vault_password_file: "/root/.vault"
 #     state: present
 #     key: "foo.acme.com ssh-rsa AAAAB3NzaC1...
 
-ansible_pull_command: >
+ansible_pull_command: >-
   {{ ansible_pull_venv_dir }}/bin/ansible-pull
   --accept-host-key
   --directory {{ ansible_pull_workdir }}
