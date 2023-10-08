@@ -133,27 +133,15 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Start and enable {{ ansible_pull_scheduler }}
-  service:
-    name: "{{ ansible_pull_scheduler }}"
-    enabled: yes
-    state: started
+- name: Merge default and custom cron job dictionary
+  set_fact:
+    ansible_pull_cron_job: "{{ ansible_pull_cron_job_defaults | combine(ansible_pull_cron_job | default({})) }}"
   tags:
     - ansible_pull
     - ansible_pull_scheduler
-
-- name: Create job to run ansible-pull
-  cron:
-    name: "{{ item.name }}"
-    minute: "{{ item.minute }}"
-    hour: "{{ item.hour }}"
-    day: "{{ item.day }}"
-    job: "{{ item.job }}"
-    state: "{{ item.state }}"
-    cron_file: "{{ item.cron_file | default(omit) }}"
-    user: "{{ ansible_pull_user }}"
-  loop: "{{ ansible_pull_cron_jobs }}"
-  when: "'cron' in ansible_pull_scheduler"
+  
+- name: Create job to run ansible-pull using {{ ansible_pull_scheduler_type }}
+  include_tasks: "scheduler-{{ ansible_pull_scheduler_type }}.yml"
   tags:
     - ansible_pull
     - ansible_pull_scheduler

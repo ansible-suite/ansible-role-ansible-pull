@@ -1,0 +1,29 @@
+- name: Convert cron to systemd time units
+  set_fact:
+    ansible_pull_cron_job: "{{ ansible_pull_cron_job | combine({ item: ansible_pull_cron_job[item] | regex_replace('\\*/', '0/') }) }}"
+  loop:
+    - hour
+    - minute
+    - day
+
+- name: Create systemd service unit file
+  template:
+    src: ansible-pull.service.j2
+    dest: /etc/systemd/system/ansible-pull.service
+  vars:
+    job: "{{ ansible_pull_cron_job }}"
+  notify: Reload systemd
+
+- name: Create systemd timer unit file
+  template:
+    src: ansible-pull.timer.j2
+    dest: /etc/systemd/system/ansible-pull.timer
+  vars:
+    job: "{{ ansible_pull_cron_job }}"
+  notify: Reload systemd
+
+- name: Start and enable the systemd timer
+  systemd:
+    name: ansible-pull.timer
+    enabled: yes
+    state: started

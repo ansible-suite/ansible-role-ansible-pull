@@ -20,23 +20,28 @@ ansible_pull_vault_password_file: "/root/.vault"
 #     state: present
 #     key: "foo.acme.com ssh-rsa AAAAB3NzaC1...
 
-ansible_pull_cron_jobs:
-  - name: run ansible-pull
-    hour: "*"
-    minute: "*/10"
-    day: "*"
-    state: present
-    cron_file: ansible-pull
-    job: >
-      {{ ansible_pull_venv_dir }}/bin/ansible-pull
-      --accept-host-key
-      --directory {{ ansible_pull_workdir }}
-      --full
-      {%if ansible_pull_only_if_changed is true %}--only-if-changed{% endif %}
-      --url {{ ansible_pull_repo }}
-      {%if ansible_pull_branch is defined %}--checkout {{ ansible_pull_branch }}{% endif %}
-      {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
-      {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
+ansible_pull_command: >
+  {{ ansible_pull_venv_dir }}/bin/ansible-pull
+  --accept-host-key
+  --directory {{ ansible_pull_workdir }}
+  --full
+  {%if ansible_pull_only_if_changed is true %}--only-if-changed{% endif %}
+  --url {{ ansible_pull_repo }}
+  {%if ansible_pull_branch is defined %}--checkout {{ ansible_pull_branch }}{% endif %}
+  {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
+  {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
+
+ansible_pull_scheduler_type: cron
+
+ansible_pull_cron_job_defaults:
+  name: Run ansible-pull
+  hour: "*"
+  minute: "*/30"
+  day: "*"
+  state: present
+  cron_file: ansible-pull
+  persistent: true
+  job: "{{ ansible_pull_command }}"
 
 ansible_pull_ssh_github_parse_pattern: 'github\.com[/:]([^/]+)/((?:(?!\.git/?|/).)+)(?:\.git)?/?$'
 ansible_pull_ssh_gitlab_parse_pattern: '(?:git@|https://)([^/]*)[/:]([^/]+/(?:(?!\.git/?|/).)+)(?:\.git)?/?$'

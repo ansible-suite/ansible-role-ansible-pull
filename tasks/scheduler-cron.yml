@@ -1,0 +1,22 @@
+- name: Start and enable {{ ansible_pull_scheduler }}
+  service:
+    name: "{{ ansible_pull_scheduler }}"
+    enabled: yes
+    state: started
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+
+- name: Create cron job to run ansible-pull
+  cron:
+    name: "{{ ansible_pull_cron_job.name }}"
+    minute: "{{ ansible_pull_cron_job.minute }}"
+    hour: "{{ ansible_pull_cron_job.hour }}"
+    day: "{{ ansible_pull_cron_job.day }}"
+    job: "{{ ansible_pull_cron_job.job }}"
+    state: "{{ ansible_pull_cron_job.state }}"
+    cron_file: "{{ ansible_pull_cron_job.cron_file | default(omit) }}"
+    user: "{{ ansible_pull_user }}"
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler

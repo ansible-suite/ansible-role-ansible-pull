@@ -1,0 +1,9 @@
+[Unit]
+Description={{ job.name }} Timer
+
+[Timer]
+OnCalendar={% if job.day_of_week is defined %}{{ job.day_of_week }} {% endif %}{{ job.year | default("*") }}-{{ job.month | default("*") }}-{{ job.day | default("*") }} {{ job.hour | default("00") }}:{{ job.minute | default("00") }}:{{ job.second | default("00") }}
+{% if job.persistent is defined %}Persistent={{ job.persistent }}{% endif %}
+
+[Install]
+WantedBy=timers.target
