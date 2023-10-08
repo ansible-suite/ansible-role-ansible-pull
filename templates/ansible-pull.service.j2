@@ -2,5 +2,5 @@
 Description={{ job.name }}
 
 [Service]
-ExecStart={{ job.job }}
+ExecStart=/bin/bash -c {{ job.job }}
 Type=oneshot
