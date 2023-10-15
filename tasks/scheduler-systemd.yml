@@ -5,6 +5,11 @@
     - hour
     - minute
     - day
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd
 
 - name: Create systemd service unit file
   template:
@@ -13,6 +18,10 @@
   vars:
     job: "{{ ansible_pull_cron_job }}"
   notify: Reload systemd
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd
 
 - name: Create systemd timer unit file
   template:
@@ -21,12 +30,20 @@
   vars:
     job: "{{ ansible_pull_cron_job }}"
   notify: Reload systemd
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd
 
 - name: Start and enable the systemd timer
   systemd:
     name: ansible-pull.timer
     enabled: yes
     state: started
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd
 
 - name: Create systemd unit file for initial setup
   template:
@@ -35,3 +52,7 @@
   vars:
     job: "{{ ansible_pull_cron_job }}"
   notify: Reload systemd
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd

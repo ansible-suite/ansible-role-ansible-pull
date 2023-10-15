@@ -139,18 +139,20 @@
     - ansible_pull
     - ansible_pull_ssh
 
+- name: Create a script with ansible-pull command line arguments
+  template:
+    src: ansible-pull.j2
+    dest: "{{ ansible_pull_script_path }}"
+    mode: '700'
+  tags:
+    - ansible_pull
+
 - name: Merge default and custom cron job dictionary
   set_fact:
     ansible_pull_cron_job: "{{ ansible_pull_cron_job_defaults | combine(ansible_pull_cron_job | default({})) }}"
   tags:
     - ansible_pull
     - ansible_pull_scheduler
-
-- name: Create a script with ansible-pull command line arguments
-  template:
-    src: ansible-pull.j2
-    dest: "{{ ansible_pull_script_path }}"
-    mode: '700'
   
 - name: Create job to run ansible-pull using {{ ansible_pull_scheduler_type }}
   include_tasks: "scheduler-{{ ansible_pull_scheduler_type }}.yml"

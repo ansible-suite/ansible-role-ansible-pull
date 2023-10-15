@@ -1,10 +1,20 @@
 - name: Extract GitHub repo path components
   set_fact:
     _github_url_components: "{{ ansible_pull_repo | regex_findall(ansible_pull_ssh_github_parse_pattern) | first | list }}"
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+    - ansible_pull_ssh_github
 
 - name: Get GitHub API URL
   set_fact:
     _github_keys_api_url: https://api.github.com/repos/{{ _github_url_components[0] }}/{{ _github_url_components[1] }}/keys
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+    - ansible_pull_ssh_github
 
 - name: Retrieve list of existing deploy keys
   uri:
@@ -17,12 +27,20 @@
     return_content: yes
     validate_certs: no
   register: _existing_deploy_keys
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+    - ansible_pull_ssh_github
 
 - name: Test whether SSH public key is present in the list of existing deploy keys
   set_fact:
     _deploy_key_exists: "{{ _existing_deploy_keys.content | from_json | selectattr('key', '==', _ssh_key_generation.ssh_public_key | regex_search('^[^=]+=') ) | list | length > 0 }}"
-  delegate_to: 127.0.0.1
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+    - ansible_pull_ssh_github
 
 - name: Upload SSH public key to GitHub repository
   uri:
@@ -36,6 +54,10 @@
     body: '{"title": "{{ ansible_hostname }}", "key": "{{ _ssh_key_generation.ssh_public_key }}", "read_only": true}'
     status_code: 201
   register: _ssh_key_upload
-  delegate_to: 127.0.0.1
   changed_when: _ssh_key_upload.status == 201
   when: not _deploy_key_exists
+  delegate_to: localhost
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+    - ansible_pull_ssh_github
