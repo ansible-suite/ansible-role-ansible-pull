@@ -31,6 +31,8 @@ ansible_pull_command: >-
   {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
   {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
 
+ansible_pull_script_path: /usr/local/sbin/ansible-pull
+
 ansible_pull_scheduler_type: cron
 
 ansible_pull_cron_job_defaults:
@@ -41,7 +43,9 @@ ansible_pull_cron_job_defaults:
   state: present
   cron_file: ansible-pull
   persistent: true
-  job: "{{ ansible_pull_command }}"
+  job: "{{ ansible_pull_script_path }}"
+
+ansible_pull_initial_plymouth_messsage: "Performing initial setup ..."
 
 ansible_pull_ssh_github_parse_pattern: 'github\.com[/:]([^/]+)/((?:(?!\.git/?|/).)+)(?:\.git)?/?$'
 ansible_pull_ssh_gitlab_parse_pattern: '(?:git@|https://)([^/]*)[/:]([^/]+/(?:(?!\.git/?|/).)+)(?:\.git)?/?$'
