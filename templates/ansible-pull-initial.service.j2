@@ -6,7 +6,7 @@ ConditionFirstBoot=yes
 [Service]
 Type=oneshot
 ExecStartPre=-/bin/plymouth display-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
-ExecStart=/bin/bash -c '{{ job.job | regex_replace("\'", "\\'") }}'
+ExecStart={{ job.job }}
 ExecStop=-/bin/plymouth hide-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
 
 [Install]
