@@ -1,5 +1,6 @@
 [Unit]
 Description={{ job.name }} - initial setup
+Before=multi-user.target
 Before=ansible-pull.service
 ConditionFirstBoot=yes
 
