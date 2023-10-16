@@ -56,3 +56,12 @@
     - ansible_pull
     - ansible_pull_scheduler
     - systemd
+
+- name: Enable the systemd service for initial setup
+  systemd:
+    name: ansible-pull-initial.service
+    enabled: yes
+  tags:
+    - ansible_pull
+    - ansible_pull_scheduler
+    - systemd
