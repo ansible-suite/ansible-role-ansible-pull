@@ -1,6 +1,7 @@
-ansible_pull_workdir: /var/lib/ansible/local
-ansible_pull_venv_dir: /var/lib/ansible/.venv
-ansible_pull_initial_file: /var/lib/ansible/initial
+ansible_pull_home: /var/lib/ansible
+ansible_pull_workdir: "{{ ansible_pull_home }}/local"
+ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
+ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
 ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
 ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
 ansible_pull_logfile: /var/log/ansible-pull.log
