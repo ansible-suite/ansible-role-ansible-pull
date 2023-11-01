@@ -23,15 +23,16 @@ ansible_pull_vault_password_file: "/root/.vault"
 #     key: "foo.acme.com ssh-rsa AAAAB3NzaC1...
 
 ansible_pull_command: >-
-  {{ ansible_pull_venv_dir }}/bin/ansible-pull
+  "{{ ansible_pull_venv_dir }}/bin/ansible-pull"
   --accept-host-key
-  --directory {{ ansible_pull_workdir }}
+  --directory "{{ ansible_pull_workdir }}"
   --full
   {%if ansible_pull_only_if_changed is true %}--only-if-changed{% endif %}
-  --url {{ ansible_pull_repo }}
-  {%if ansible_pull_branch is defined %}--checkout {{ ansible_pull_branch }}{% endif %}
-  {%if ansible_pull_vault_password is defined %}--vault-password-file={{ ansible_pull_vault_password_file }}{% endif %}
-  {{ ansible_pull_playbook }} 2>&1 >> {{ ansible_pull_logfile }}
+  --url "{{ ansible_pull_repo }}"
+  {%if ansible_pull_branch is defined %}--checkout "{{ ansible_pull_branch }}"{% endif %}
+  --private-key "{{ ansible_pull_ssh_key_file }}"
+  {%if ansible_pull_vault_password is defined %}--vault-password-file "{{ ansible_pull_vault_password_file }}"{% endif %}
+  "{{ ansible_pull_playbook }}"
 
 ansible_pull_script_path: /usr/local/sbin/ansible-pull
 
