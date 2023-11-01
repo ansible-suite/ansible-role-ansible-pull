@@ -24,12 +24,38 @@
     - yum
     - apt
 
+- name: Create system user '{{ ansible_pull_user }}'
+  user:
+    name: "{{ ansible_pull_user }}"
+    system: true
+    home: "{{ ansible_pull_home }}"
+    create_home: false
+    shell: /sbin/nologin
+    state: present
+  when: ansible_pull_user != 'root'
+  tags:
+    - ansible_pull
+    - ansible_pull_user
+
+- name: Copy sudoers settings for {{ ansible_pull_user }}
+  template:
+    src: ansible-sudoers.j2
+    dest: /etc/sudoers.d/ansible-pull
+    owner: root
+    group: root
+    mode: '0600'
+  when: ansible_pull_user_sudoer and ansible_pull_user != "root"
+  tags:
+    - ansible_pull
+    - ansible_pull_user
+    - ansible_pull_sudo
+
 - name: Create directory for Ansible repository
   file:
     dest: "{{ ansible_pull_workdir }}"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
     mode: '0700'
   tags:
     - ansible_pull
@@ -38,7 +64,7 @@
   pip:
     name: pip
     state: latest
-    virtualenv: /var/lib/ansible/.venv
+    virtualenv: "{{ ansible_pull_venv_dir }}"
   tags:
     - ansible_pull
     - packages
@@ -48,7 +74,7 @@
   pip:
     name: "{{ item }}"
     state: latest
-    virtualenv: /var/lib/ansible/.venv
+    virtualenv: "{{ ansible_pull_venv_dir }}"
   loop: "{{ ansible_pull_pip_packages }}"
   tags:
     - ansible_pull
@@ -66,22 +92,11 @@
     - ansible_pull
     - ansible_pull_logrotate
 
-- name: Copy ansible.cfg
-  template:
-    src: ansible.cfg.j2
-    dest: /root/.ansible.cfg
-    owner: root
-    group: root
-    mode: '0700'
-  tags:
-    - ansible_pull
-    - ansible_pull_config
-
 - name: Copy vault password file
   template:
     src: vault.j2
     dest: "{{ ansible_pull_vault_password_file }}"
-    owner: root
+    owner: "{{ ansible_pull_user }}"
     group: root
     mode: '0600'
   when: ansible_pull_vault_password is defined
@@ -89,10 +104,25 @@
     - ansible_pull
     - ansible_pull_vault
 
-- name: Generate SSH key for root
-  user:
-    name: root
-    generate_ssh_key: true
+- name: Create .ssh folder for {{ ansible_pull_user }}
+  file:
+    path: "{{ ansible_pull_ssh_dir }}"
+    state: directory
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
+    mode: '0700'
+  tags:
+    - ansible_pull
+    - ansible_pull_ssh
+
+- name: Generate SSH key for {{ ansible_pull_user }}
+  openssh_keypair:
+    path: "{{ ansible_pull_ssh_key_file }}"
+    size: 3072
+    regenerate: never
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
+    mode: '0400'
   register: _ssh_key_generation
   when: ansible_pull_ssh_private_key is not defined
   tags:
@@ -105,25 +135,25 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Create .ssh folder for root
-  file:
-    path: "/root/.ssh"
-    state: directory
-    owner: root
-    group: root
-    mode: '0700'
+- name: Copy SSH private key for {{ ansible_pull_user }}
+  template:
+    src: id_rsa.j2
+    dest: "{{ ansible_pull_ssh_key_file }}"
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
+    mode: '0400'
   when: ansible_pull_ssh_private_key is defined
   tags:
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Copy SSH private key for root
+- name: Copy SSH public key for {{ ansible_pull_user }}
   template:
-    src: id_rsa.j2
-    dest: /root/.ssh/id_rsa
-    owner: root
-    group: root
-    mode: '0600'
+    src: id_rsa.pub.j2
+    dest: "{{ ansible_pull_ssh_key_file }}.pub"
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
+    mode: '0400'
   when: ansible_pull_ssh_private_key is defined
   tags:
     - ansible_pull
@@ -131,6 +161,7 @@
 
 - name: Add host keys to known_hosts
   known_hosts:
+    path: "{{ ansible_pull_ssh_dir }}/known_hosts"
     name: "{{ item.name }}"
     key: "{{ item.key }}"
     state: "{{ item.state }}"
@@ -143,7 +174,9 @@
   template:
     src: ansible-pull.j2
     dest: "{{ ansible_pull_script_path }}"
-    mode: '700'
+    owner: root
+    group: "{{ ansible_pull_user }}"
+    mode: '0650'
   tags:
     - ansible_pull
 
@@ -162,7 +195,7 @@
 
 - name: Display SSH public key
   debug:
-    msg: "Here is the public key that needs to be placed on the remote git server: {{ _ssh_key_generation.ssh_public_key }}"
+    msg: "Here is the public key that needs to be placed on the remote git server: {{ _ssh_key_generation.public_key }}"
   when: _ssh_key_generation is changed and ansible_pull_ssh_key_mgmt is not defined
   tags:
     - ansible_pull

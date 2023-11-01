@@ -2,15 +2,19 @@ ansible_pull_home: /var/lib/ansible
 ansible_pull_workdir: "{{ ansible_pull_home }}/local"
 ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
 ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
+ansible_pull_ssh_dir: "{{ ansible_pull_home }}/.ssh"
+ansible_pull_ssh_key_file: "{{ ansible_pull_ssh_dir }}/id_rsa"
 ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
 ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
 ansible_pull_logfile: /var/log/ansible-pull.log
 ansible_pull_pip_packages:
   - ansible
-ansible_pull_user: root
-ansible_pull_only_if_changed: true
+ansible_pull_user: ansible
 
-ansible_pull_vault_password_file: "/root/.vault"
+ansible_pull_only_if_changed: true
+ansible_pull_user_sudoer: true
+
+ansible_pull_vault_password_file: "{{ ansible_pull_home }}/vault"
 # ansible_pull_vault_password: "SuperSecretKey"
 # ansible_pull_ssh_private_key: |
 #   -----BEGIN RSA PRIVATE KEY-----
