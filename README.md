@@ -20,6 +20,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_pull_workdir` | `{{ ansible_pull_home }}/local` | Directory where repository is cloned. |
 | `ansible_pull_repo` | `https://github.com/samdoran/demo-playbooks.git` | Remote repository to clone when running `ansible-pull`. |
 | `ansible_pull_playbook` | `{{ ansible_pull_workdir }}/hello.yml` | Playbook to run with `ansible-pull`. |
+| `ansible_pull_script_path` | `/usr/local/sbin/ansible-pull` | Where to put the script which executes `ansible-pull` with the configured arguments. |
 | `ansible_pull_logfile` | `/var/log/ansible-pull.log` | Where to log output from `ansible-pull`. Also gets rotated. |
 | `ansible_pull_vault_password_file` | `{{ ansible_pull_home }}/vault` | File to hold Ansible vault key. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
 | `ansible_pull_vault_password` | `SuperSecretKey` | Vault key, in plain text, that will be inserted into `{{ ansible_pull_vault_password_file }}`. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
