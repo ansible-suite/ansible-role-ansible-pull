@@ -3,4 +3,4 @@
 export ANSIBLE_CONFIG="{{ ansible_pull_cfg }}"
 export ANSIBLE_PULL_INITIAL_FILE="{{ ansible_pull_initial_file }}"
 
-exec {{ ansible_pull_command }} 2>&1 | sudo tee "{{ ansible_pull_logfile }}"
+exec {{ ansible_pull_command }} > "{{ ansible_pull_logfile }}" 2>&1

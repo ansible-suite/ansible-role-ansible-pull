@@ -92,6 +92,14 @@
     - ansible_pull
     - ansible_pull_logrotate
 
+- name: Touch "{{ ansible_pull_logfile }}"
+  file:
+    path: "{{ ansible_pull_logfile }}"
+    owner: "{{ ansible_pull_user }}"
+    group: adm
+    mode: '0640'
+    state: touch
+
 - name: Copy ansible.cfg
   template:
     src: ansible.cfg.j2
