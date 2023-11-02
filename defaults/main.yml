@@ -1,17 +1,19 @@
 ansible_pull_home: /var/lib/ansible
 ansible_pull_workdir: "{{ ansible_pull_home }}/local"
+ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
 ansible_pull_cfg: "{{ ansible_pull_home }}/ansible.cfg"
 ansible_pull_tmp_dir: "{{ ansible_pull_home }}/tmp"
-ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
-ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
 ansible_pull_ssh_dir: "{{ ansible_pull_home }}/.ssh"
 ansible_pull_ssh_key_file: "{{ ansible_pull_ssh_dir }}/id_rsa"
+ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
 ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
 ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
+ansible_pull_script_path: /usr/local/sbin/ansible-pull
 ansible_pull_logfile: /var/log/ansible-pull.log
+ansible_pull_user: ansible
+ansible_pull_scheduler_type: cron
 ansible_pull_pip_packages:
   - ansible
-ansible_pull_user: ansible
 
 ansible_pull_only_if_changed: true
 ansible_pull_user_sudoer: true
@@ -39,10 +41,6 @@ ansible_pull_command: >-
   --private-key "{{ ansible_pull_ssh_key_file }}"
   {%if ansible_pull_vault_password is defined %}--vault-password-file "{{ ansible_pull_vault_password_file }}"{% endif %}
   "{{ ansible_pull_playbook }}"
-
-ansible_pull_script_path: /usr/local/sbin/ansible-pull
-
-ansible_pull_scheduler_type: cron
 
 ansible_pull_cron_job_defaults:
   name: Run ansible-pull
