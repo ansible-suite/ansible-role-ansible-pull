@@ -92,6 +92,17 @@
     - ansible_pull
     - ansible_pull_logrotate
 
+- name: Copy ansible.cfg
+  template:
+    src: ansible.cfg.j2
+    dest: "{{ ansible_pull_cfg }}"
+    owner: root
+    group: "{{ ansible_pull_user }}"
+    mode: '0640'
+  tags:
+    - ansible_pull
+    - ansible_pull_config
+
 - name: Copy vault password file
   template:
     src: vault.j2

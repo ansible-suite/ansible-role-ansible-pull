@@ -1,5 +1,7 @@
 ansible_pull_home: /var/lib/ansible
 ansible_pull_workdir: "{{ ansible_pull_home }}/local"
+ansible_pull_cfg: "{{ ansible_pull_home }}/ansible.cfg"
+ansible_pull_tmp_dir: "{{ ansible_pull_home }}/tmp"
 ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
 ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
 ansible_pull_ssh_dir: "{{ ansible_pull_home }}/.ssh"

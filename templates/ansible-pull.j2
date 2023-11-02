@@ -1,3 +1,5 @@
 #!/bin/bash
 
+export ANSIBLE_CONFIG="{{ ansible_pull_cfg }}"
+
 exec {{ ansible_pull_command }} 2>&1 | sudo tee "{{ ansible_pull_logfile }}"

@@ -2,6 +2,8 @@
 
 [defaults]
 
-hostfile      = {{ ansible_pull_workdir }}/inventory
+home          = {{ ansible_pull_workdir }}
+inventory     = {{ ansible_pull_workdir }}/inventory
 roles_path    = {{ ansible_pull_workdir }}/roles
+local_tmp     = {{ ansible_pull_tmp_dir }}
 host_key_checking = False
