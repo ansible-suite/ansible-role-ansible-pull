@@ -1,8 +1,6 @@
 Ansible Pull
 =========
 
-_This repo is a fork of https://github.com/samdoran/ansible-role-ansible-pull. The rest of README.md is unchanged_
-
 Configure a remote machine to run `ansible-pull` on a schedule. `ansible` will be installed on the managed node in a virtual environment using `pip`.
 
 Requirements
