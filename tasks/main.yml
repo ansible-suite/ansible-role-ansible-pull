@@ -92,12 +92,6 @@
     - ansible_pull
     - ansible_pull_logrotate
 
-- name: Test whether "{{ ansible_pull_logfile }}" exists
-  stat:
-    path: "{{ ansible_pull_logfile }}"
-  when: ansible_pull_logfile != ""
-  register: _file_status
-
 - name: Touch "{{ ansible_pull_logfile }}"
   file:
     path: "{{ ansible_pull_logfile }}"
@@ -105,7 +99,8 @@
     group: adm
     mode: '0640'
     state: touch
-  when: ansible_pull_logfile != "" and not _file_status.stat.exists
+    modification_time: preserve
+    access_time: preserve
 
 - name: Copy ansible.cfg
   template:
