@@ -1,12 +1,12 @@
 [Unit]
 Description={{ job.name }} - initial setup
-Before=display-manager.service getty.target ansible-pull.service
+Before=display-manager.service getty.target
+BindsTo=ansible-pull.service
 ConditionPathExists=!{{ ansible_pull_initial_file }}
 
 [Service]
 Type=oneshot
 ExecStartPre=-/bin/plymouth display-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
-ExecStart={{ job.job }}
 ExecStopPost=-/bin/plymouth hide-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
 
 [Install]
