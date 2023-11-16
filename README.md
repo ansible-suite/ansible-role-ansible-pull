@@ -19,6 +19,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_pull_home` | `/var/lib/ansible` | Main directory for ansible-pull configuration and data. |
 | `ansible_pull_workdir` | `{{ ansible_pull_home }}/local` | Directory where repository is cloned. |
 | `ansible_pull_repo` | `https://github.com/samdoran/demo-playbooks.git` | Remote repository to clone when running `ansible-pull`. |
+| `ansible_pull_inventory` | `{{ ansible_pull_workdir }}/hosts` | Inventory file to use with `ansible-pull`. |
 | `ansible_pull_playbook` | `{{ ansible_pull_workdir }}/hello.yml` | Playbook to run with `ansible-pull`. |
 | `ansible_pull_script_path` | `/usr/local/sbin/ansible-pull` | Where to put the script which executes `ansible-pull` with the configured arguments. |
 | `ansible_pull_logfile` | `/var/log/ansible-pull.log` | Where to log output from `ansible-pull`. Also gets rotated. |
@@ -30,7 +31,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_pull_user` | `ansible` | User that will run `ansible-pull`. |
 | `ansible_pull_scheduler_type` | `cron` | The scheduler type to use, can be either `cron` or `systemd`. |
 | `ansible_pull_pip_packages` | `['ansible']` | List of Python packages to install in the virtual environment. |
-| `ansible_pull_only_if_changed` | `true` | Whether to execute the playbook only if the repository changes. Note that this saves computing power most of the time, but if the play fails it will not rerun until the repository changes. |
+| `ansible_pull_only_if_changed` | `true` | Whether to execute the playbook only if the repository changes. Note that while this saves computing power most of the time, if the play fails, it will not rerun until the repository changes again. |
 | `ansible_pull_user_sudoer` | `true` | Whether to give `{{ ansible_pull_users }}` the right to run any command as any user. |
 
 
