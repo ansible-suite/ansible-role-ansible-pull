@@ -2,8 +2,9 @@
 
 [defaults]
 
-home          = {{ ansible_pull_workdir }}
-inventory     = {{ ansible_pull_inventory }}
-roles_path    = {{ ansible_pull_workdir }}/roles
-local_tmp     = {{ ansible_pull_tmp_dir }}
+home              = {{ ansible_pull_workdir }}
+inventory         = {{ ansible_pull_inventory }}
+roles_path        = {{ ansible_pull_workdir }}/roles
+collections_path  = {{ ansible_pull_workdir }}/collections
+local_tmp         = {{ ansible_pull_tmp_dir }}
 host_key_checking = False
