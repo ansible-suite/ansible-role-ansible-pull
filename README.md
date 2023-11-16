@@ -29,6 +29,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_known_hosts` | `[]` | List of SSH host keys to add to `known_hosts` for `{{ ansible_pull_user }}`. |
 | `ansible_pull_cron_job` | [see `defaults/main.yml`] | Configuration for a job that runs `ansible-pull`. The default settings run `ansible-pull` every 30 minutes. |
 | `ansible_pull_user` | `ansible` | User that will run `ansible-pull`. |
+| `ansible_pull_group` | `ansible` | Group for `{{ ansible_pull_user }}`. |
 | `ansible_pull_scheduler_type` | `cron` | The scheduler type to use, can be either `cron` or `systemd`. |
 | `ansible_pull_pip_packages` | `['ansible']` | List of Python packages to install in the virtual environment. |
 | `ansible_pull_only_if_changed` | `true` | Whether to execute the playbook only if the repository changes. Note that while this saves computing power most of the time, if the play fails, it will not rerun until the repository changes again. |
