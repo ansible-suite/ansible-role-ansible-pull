@@ -23,11 +23,22 @@
     - packages
     - yum
     - apt
+  
+- name: Create system group '{{ ansible_pull_group }}'
+  group:
+    name: "{{ ansible_pull_group }}"
+    system: true
+    state: present
+  when: ansible_pull_user != 'root'
+  tags:
+    - ansible_pull
+    - ansible_pull_user 
 
 - name: Create system user '{{ ansible_pull_user }}'
   user:
     name: "{{ ansible_pull_user }}"
     system: true
+    group: "{{ ansible_pull_group }}"
     home: "{{ ansible_pull_home }}"
     create_home: false
     shell: /sbin/nologin
@@ -55,7 +66,7 @@
     dest: "{{ ansible_pull_workdir }}"
     state: directory
     owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0700'
   tags:
     - ansible_pull
@@ -104,7 +115,7 @@
     src: ansible.cfg.j2
     dest: "{{ ansible_pull_cfg_file }}"
     owner: root
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0640'
   tags:
     - ansible_pull
@@ -115,7 +126,7 @@
     src: vault.j2
     dest: "{{ ansible_pull_vault_password_file }}"
     owner: "{{ ansible_pull_user }}"
-    group: root
+    group: "{{ ansible_pull_group }}"
     mode: '0600'
   when: ansible_pull_vault_password is defined
   tags:
@@ -127,7 +138,7 @@
     path: "{{ ansible_pull_ssh_dir }}"
     state: directory
     owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0700'
   tags:
     - ansible_pull
@@ -139,7 +150,7 @@
     size: 3072
     regenerate: never
     owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0400'
   register: _ssh_key_generation
   when: ansible_pull_ssh_private_key is not defined
@@ -158,7 +169,7 @@
     src: id_rsa.j2
     dest: "{{ ansible_pull_ssh_key_file }}"
     owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0400'
   when: ansible_pull_ssh_private_key is defined
   tags:
@@ -170,7 +181,7 @@
     src: id_rsa.pub.j2
     dest: "{{ ansible_pull_ssh_key_file }}.pub"
     owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
     mode: '0400'
   when: ansible_pull_ssh_private_key is defined
   tags:

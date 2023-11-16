@@ -11,6 +11,7 @@ ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
 ansible_pull_script_path: /usr/local/sbin/ansible-pull
 ansible_pull_logfile: /var/log/ansible-pull.log
 ansible_pull_user: ansible
+ansible_pull_group: "{{ ansible_pull_user }}"
 ansible_pull_scheduler_type: cron
 ansible_pull_pip_packages:
   - ansible
