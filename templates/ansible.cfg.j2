@@ -1,10 +1,9 @@
 # {{ ansible_managed }}
 
-[defaults]
+{% for section_name, opts in ansible_pull_cfg.items() %}
+[{{ section_name }}]
+{% for name, val in opts.items() %}
+{{ name }} = {{ val }}
+{% endfor %}
 
-home              = {{ ansible_pull_workdir }}
-inventory         = {{ ansible_pull_inventory }}
-roles_path        = {{ ansible_pull_workdir }}/roles
-collections_path  = {{ ansible_pull_workdir }}/collections
-local_tmp         = {{ ansible_pull_tmp_dir }}
-host_key_checking = False
+{% endfor %}

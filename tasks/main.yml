@@ -92,10 +92,17 @@
     - ansible_pull
     - ansible_pull_logrotate
 
-- name: Copy ansible.cfg
+- name: Merge default and custom config dictionary
+  set_fact:
+    ansible_pull_cfg: "{{ ansible_pull_cfg_defaults | combine(ansible_pull_cfg | default({}), recursive=True) }}"
+  tags:
+    - ansible_pull
+    - ansible_pull_config
+
+- name: Create ansible.cfg
   template:
     src: ansible.cfg.j2
-    dest: "{{ ansible_pull_cfg }}"
+    dest: "{{ ansible_pull_cfg_file }}"
     owner: root
     group: "{{ ansible_pull_user }}"
     mode: '0640'

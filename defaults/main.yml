@@ -1,8 +1,7 @@
 ansible_pull_home: /var/lib/ansible
 ansible_pull_workdir: "{{ ansible_pull_home }}/local"
 ansible_pull_venv_dir: "{{ ansible_pull_home }}/venv"
-ansible_pull_cfg: "{{ ansible_pull_home }}/ansible.cfg"
-ansible_pull_tmp_dir: "{{ ansible_pull_home }}/tmp"
+ansible_pull_cfg_file: "{{ ansible_pull_home }}/ansible.cfg"
 ansible_pull_ssh_dir: "{{ ansible_pull_home }}/.ssh"
 ansible_pull_ssh_key_file: "{{ ansible_pull_ssh_dir }}/id_rsa"
 ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
@@ -42,6 +41,15 @@ ansible_pull_command: >-
   --private-key "{{ ansible_pull_ssh_key_file }}"
   {%if ansible_pull_vault_password is defined %}--vault-password-file "{{ ansible_pull_vault_password_file }}"{% endif %}
   "{{ ansible_pull_playbook }}"
+
+ansible_pull_cfg_defaults:
+  defaults:
+    home: "{{ ansible_pull_workdir }}"
+    inventory: "{{ ansible_pull_inventory }}"
+    roles_path: "{{ ansible_pull_workdir }}/roles"
+    collections_path: "{{ ansible_pull_workdir }}/collections"
+    local_tmp: "{{ ansible_pull_home }}/tmp"
+    host_key_checking: False
 
 ansible_pull_cron_job_defaults:
   name: Run ansible-pull
