@@ -7,6 +7,7 @@ ansible_pull_ssh_dir: "{{ ansible_pull_home }}/.ssh"
 ansible_pull_ssh_key_file: "{{ ansible_pull_ssh_dir }}/id_rsa"
 ansible_pull_initial_file: "{{ ansible_pull_home }}/initial"
 ansible_pull_repo: https://github.com/samdoran/demo-playbooks.git
+ansible_pull_inventory: "{{ ansible_pull_workdir }}/hosts"
 ansible_pull_playbook: "{{ ansible_pull_workdir }}/hello.yml"
 ansible_pull_script_path: /usr/local/sbin/ansible-pull
 ansible_pull_logfile: /var/log/ansible-pull.log
