@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export ANSIBLE_CONFIG="{{ ansible_pull_cfg }}"
+export ANSIBLE_CONFIG="{{ ansible_pull_cfg_file }}"
 export ANSIBLE_PULL_INITIAL_FILE="{{ ansible_pull_initial_file }}"
 
 exec sudo -E -u {{ ansible_pull_user }} {{ ansible_pull_command }} >> "{{ ansible_pull_logfile }}" 2>&1
