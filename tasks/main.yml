@@ -17,7 +17,7 @@
     - yum
     - apt
 
-- include_tasks: "install-{{ ansible_facts.os_family }}.yml"
+- include_tasks: "install/{{ ansible_facts.os_family }}.yml"
   tags:
     - ansible_pull
     - packages
@@ -158,7 +158,7 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- include_tasks: key_mgmt-{{ ansible_pull_ssh_key_mgmt }}.yml
+- include_tasks: key_mgmt/{{ ansible_pull_ssh_key_mgmt }}.yml
   when: _ssh_key_generation is not skipped and ansible_pull_ssh_key_mgmt is defined
   tags:
     - ansible_pull
@@ -216,7 +216,7 @@
     - ansible_pull_scheduler
   
 - name: Create job to run ansible-pull using {{ ansible_pull_scheduler_type }}
-  include_tasks: "scheduler-{{ ansible_pull_scheduler_type }}.yml"
+  include_tasks: "scheduler/{{ ansible_pull_scheduler_type }}.yml"
   tags:
     - ansible_pull
     - ansible_pull_scheduler
