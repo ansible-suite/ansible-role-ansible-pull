@@ -1,0 +1,36 @@
+- name: Create system group '{{ ansible_pull_group }}'
+  group:
+    name: "{{ ansible_pull_group }}"
+    system: true
+    state: present
+  when: ansible_pull_user != 'root'
+  tags:
+    - ansible_pull
+    - ansible_pull_user 
+
+- name: Create system user '{{ ansible_pull_user }}'
+  user:
+    name: "{{ ansible_pull_user }}"
+    system: true
+    group: "{{ ansible_pull_group }}"
+    home: "{{ ansible_pull_home }}"
+    create_home: false
+    shell: /sbin/nologin
+    state: present
+  when: ansible_pull_user != 'root'
+  tags:
+    - ansible_pull
+    - ansible_pull_user
+
+- name: Create sudoers rule for {{ ansible_pull_user }}
+  community.general.sudoers:
+    name: ansible-pull
+    user: "{{ ansible_pull_user }}"
+    runas: ALL
+    commands: ALL
+    state: present
+  when: ansible_pull_user_sudoer and ansible_pull_user != "root"
+  tags:
+    - ansible_pull
+    - ansible_pull_user
+    - ansible_pull_sudo

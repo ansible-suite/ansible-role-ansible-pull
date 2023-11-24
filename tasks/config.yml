@@ -1,0 +1,40 @@
+- name: Copy logrotate settings
+  template:
+    src: ansible-logrotate.j2
+    dest: /etc/logrotate.d/ansible-pull
+    owner: root
+    group: root
+    mode: '0644'
+  tags:
+    - ansible_pull
+    - ansible_pull_logrotate
+
+- name: Merge default and custom config dictionary
+  set_fact:
+    ansible_pull_cfg: "{{ ansible_pull_cfg_defaults | combine(ansible_pull_cfg | default({}), recursive=True) }}"
+  tags:
+    - ansible_pull
+    - ansible_pull_config
+
+- name: Create ansible.cfg
+  template:
+    src: ansible.cfg.j2
+    dest: "{{ ansible_pull_cfg_file }}"
+    owner: root
+    group: "{{ ansible_pull_group }}"
+    mode: '0640'
+  tags:
+    - ansible_pull
+    - ansible_pull_config
+
+- name: Copy vault password file
+  template:
+    src: vault.j2
+    dest: "{{ ansible_pull_vault_password_file }}"
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_group }}"
+    mode: '0600'
+  when: ansible_pull_vault_password is defined
+  tags:
+    - ansible_pull
+    - ansible_pull_vault

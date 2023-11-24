@@ -23,43 +23,12 @@
     - packages
     - yum
     - apt
-  
-- name: Create system group '{{ ansible_pull_group }}'
-  group:
-    name: "{{ ansible_pull_group }}"
-    system: true
-    state: present
-  when: ansible_pull_user != 'root'
-  tags:
-    - ansible_pull
-    - ansible_pull_user 
 
-- name: Create system user '{{ ansible_pull_user }}'
-  user:
-    name: "{{ ansible_pull_user }}"
-    system: true
-    group: "{{ ansible_pull_group }}"
-    home: "{{ ansible_pull_home }}"
-    create_home: false
-    shell: /sbin/nologin
-    state: present
-  when: ansible_pull_user != 'root'
+- name: Set up user to run ansible-pull as
+  include_tasks: user.yml
   tags:
     - ansible_pull
     - ansible_pull_user
-
-- name: Create sudoers rule for {{ ansible_pull_user }}
-  community.general.sudoers:
-    name: ansible-pull
-    user: "{{ ansible_pull_user }}"
-    runas: ALL
-    commands: ALL
-    state: present
-  when: ansible_pull_user_sudoer and ansible_pull_user != "root"
-  tags:
-    - ansible_pull
-    - ansible_pull_user
-    - ansible_pull_sudo
 
 - name: Create directory for Ansible repository
   file:
@@ -71,155 +40,28 @@
   tags:
     - ansible_pull
 
-- name: Upgrade pip inside virtual environment
-  pip:
-    name: pip
-    state: latest
-    virtualenv: "{{ ansible_pull_venv_dir }}"
+- name: Set up Python virtual environment with necessary packages
+  include_tasks: venv.yml
   tags:
     - ansible_pull
     - packages
     - pip
 
-- name: Install Python packages
-  pip:
-    name: "{{ item }}"
-    state: latest
-    virtualenv: "{{ ansible_pull_venv_dir }}"
-  loop: "{{ ansible_pull_pip_packages }}"
-  tags:
-    - ansible_pull
-    - packages
-    - pip
-
-- name: Copy logrotate settings
-  template:
-    src: ansible-logrotate.j2
-    dest: /etc/logrotate.d/ansible-pull
-    owner: root
-    group: root
-    mode: '0644'
-  tags:
-    - ansible_pull
-    - ansible_pull_logrotate
-
-- name: Merge default and custom config dictionary
-  set_fact:
-    ansible_pull_cfg: "{{ ansible_pull_cfg_defaults | combine(ansible_pull_cfg | default({}), recursive=True) }}"
-  tags:
-    - ansible_pull
-    - ansible_pull_config
-
-- name: Create ansible.cfg
-  template:
-    src: ansible.cfg.j2
-    dest: "{{ ansible_pull_cfg_file }}"
-    owner: root
-    group: "{{ ansible_pull_group }}"
-    mode: '0640'
-  tags:
-    - ansible_pull
-    - ansible_pull_config
-
-- name: Copy vault password file
-  template:
-    src: vault.j2
-    dest: "{{ ansible_pull_vault_password_file }}"
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_group }}"
-    mode: '0600'
-  when: ansible_pull_vault_password is defined
-  tags:
-    - ansible_pull
-    - ansible_pull_vault
-
-- name: Create .ssh folder for {{ ansible_pull_user }}
-  file:
-    path: "{{ ansible_pull_ssh_dir }}"
-    state: directory
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_group }}"
-    mode: '0700'
+- name: Set up SSH for access to the repository
+  include_tasks: ssh.yml
   tags:
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Generate SSH key for {{ ansible_pull_user }}
-  openssh_keypair:
-    path: "{{ ansible_pull_ssh_key_file }}"
-    size: 3072
-    regenerate: never
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_group }}"
-    mode: '0400'
-  register: _ssh_key_generation
-  when: ansible_pull_ssh_private_key is not defined
-  tags:
-    - ansible_pull
-    - ansible_pull_ssh
-
-- include_tasks: key_mgmt/{{ ansible_pull_ssh_key_mgmt }}.yml
-  when: _ssh_key_generation is not skipped and ansible_pull_ssh_key_mgmt is defined
-  tags:
-    - ansible_pull
-    - ansible_pull_ssh
-
-- name: Copy SSH private key for {{ ansible_pull_user }}
-  template:
-    src: id_rsa.j2
-    dest: "{{ ansible_pull_ssh_key_file }}"
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_group }}"
-    mode: '0400'
-  when: ansible_pull_ssh_private_key is defined
-  tags:
-    - ansible_pull
-    - ansible_pull_ssh
-
-- name: Copy SSH public key for {{ ansible_pull_user }}
-  template:
-    src: id_rsa.pub.j2
-    dest: "{{ ansible_pull_ssh_key_file }}.pub"
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_group }}"
-    mode: '0400'
-  when: ansible_pull_ssh_private_key is defined
-  tags:
-    - ansible_pull
-    - ansible_pull_ssh
-
-- name: Add host keys to known_hosts
-  known_hosts:
-    path: "{{ ansible_pull_ssh_dir }}/known_hosts"
-    name: "{{ item.name }}"
-    key: "{{ item.key }}"
-    state: "{{ item.state }}"
-  loop: "{{ ansible_pull_known_hosts | default([]) }}"
-  tags:
-    - ansible_pull
-    - ansible_pull_ssh
-
-- name: Create a script with ansible-pull command line arguments
-  template:
-    src: ansible-pull.j2
-    dest: "{{ ansible_pull_script_path }}"
-    owner: root
-    mode: '0700'
+- name: Create configuration files
+  include_tasks: config.yml
   tags:
     - ansible_pull
 
-- name: Merge default and custom cron job dictionary
-  set_fact:
-    ansible_pull_cron_job: "{{ ansible_pull_cron_job_defaults | combine(ansible_pull_cron_job | default({})) }}"
+- name: Create job to periodiclly run ansible-pull
+  include_tasks: job.yml
   tags:
     - ansible_pull
-    - ansible_pull_scheduler
-  
-- name: Create job to run ansible-pull using {{ ansible_pull_scheduler_type }}
-  include_tasks: "scheduler/{{ ansible_pull_scheduler_type }}.yml"
-  tags:
-    - ansible_pull
-    - ansible_pull_scheduler
 
 - name: Display SSH public key
   debug:

@@ -1,0 +1,20 @@
+- name: Upgrade pip inside virtual environment
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ ansible_pull_venv_dir }}"
+  tags:
+    - ansible_pull
+    - packages
+    - pip
+
+- name: Install Python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    virtualenv: "{{ ansible_pull_venv_dir }}"
+  loop: "{{ ansible_pull_pip_packages }}"
+  tags:
+    - ansible_pull
+    - packages
+    - pip
