@@ -22,13 +22,13 @@
     - ansible_pull
     - ansible_pull_user
 
-- name: Create sudoers rule for {{ ansible_pull_user }}
-  community.general.sudoers:
-    name: ansible-pull
-    user: "{{ ansible_pull_user }}"
-    runas: ALL
-    commands: ALL
-    state: present
+- name: Copy sudoers settings for {{ ansible_pull_user }}
+  template:
+    src: ansible-sudoers.j2
+    dest: /etc/sudoers.d/ansible-pull
+    owner: root
+    group: root
+    mode: '0600'
   when: ansible_pull_user_sudoer and ansible_pull_user != "root"
   tags:
     - ansible_pull
