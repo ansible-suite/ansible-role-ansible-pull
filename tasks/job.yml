@@ -3,7 +3,8 @@
     src: ansible-pull.j2
     dest: "{{ ansible_pull_script_path }}"
     owner: root
-    mode: '0700'
+    group: "{{ ansible_pull_group }}"
+    mode: '0750'
   tags:
     - ansible_pull
 

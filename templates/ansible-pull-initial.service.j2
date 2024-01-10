@@ -8,6 +8,7 @@ Type=oneshot
 ExecStartPre=-/bin/plymouth display-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
 ExecStart={{ job.job }}
 ExecStopPost=-/bin/plymouth hide-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
+User={{ ansible_pull_user }}
 
 [Install]
 WantedBy=first-boot-complete.target

@@ -4,3 +4,4 @@ Description={{ job.name }}
 [Service]
 ExecStart={{ job.job }}
 Type=oneshot
+User={{ ansible_pull_user }}
