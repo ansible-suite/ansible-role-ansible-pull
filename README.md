@@ -17,7 +17,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | Name              | Default Value       | Description          |
 |-------------------|---------------------|----------------------|
 | `ansible_pull_home` | `/var/lib/ansible` | Main directory for ansible-pull configuration and data. |
-| `ansible_pull_workdir` | `{{ ansible_pull_home }}/local` | Directory where repository is cloned. |
+| `ansible_pull_workdir` | `{{ ansible_pull_home }}/site` | Directory where repository is cloned. |
 | `ansible_pull_repo` | `https://github.com/samdoran/demo-playbooks.git` | Remote repository to clone when running `ansible-pull`. |
 | `ansible_pull_inventory` | `{{ ansible_pull_workdir }}/hosts` | Inventory file to use with `ansible-pull`. |
 | `ansible_pull_playbook` | `{{ ansible_pull_workdir }}/hello.yml` | Playbook to run with `ansible-pull`. |
