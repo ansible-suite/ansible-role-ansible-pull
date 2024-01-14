@@ -33,7 +33,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_pull_scheduler_type` | `cron` | The scheduler type to use, can be either `cron` or `systemd`. |
 | `ansible_pull_pip_packages` | `['ansible']` | List of Python packages to install in the virtual environment. |
 | `ansible_pull_only_if_changed` | `true` | Whether to execute the playbook only if the repository changes. **Note that while this saves computing power most of the time, if the play fails, it will not rerun until the repository changes again.** |
-| `ansible_pull_user_sudoer` | `true` | Whether to give `{{ ansible_pull_users }}` the right to run any command as any user. |
+
 
 
 Dependencies

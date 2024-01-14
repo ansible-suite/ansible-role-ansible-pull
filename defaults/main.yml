@@ -17,7 +17,6 @@ ansible_pull_pip_packages:
   - ansible
 
 ansible_pull_only_if_changed: true
-ansible_pull_user_sudoer: true
 
 ansible_pull_vault_password_file: "{{ ansible_pull_home }}/vault"
 # ansible_pull_vault_password: "SuperSecretKey"
