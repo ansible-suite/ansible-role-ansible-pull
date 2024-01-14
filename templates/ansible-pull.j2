@@ -4,4 +4,9 @@ export PATH="{{ ansible_pull_venv_dir }}/bin:$PATH"
 export ANSIBLE_CONFIG="{{ ansible_pull_cfg_file }}"
 export ANSIBLE_PULL_INITIAL_FILE="{{ ansible_pull_initial_file }}"
 
-exec {{ ansible_pull_command }} &> >(sudo tee -a {{ ansible_pull_logfile }} >/dev/null)
+sudo -u root -g adm bash -c '\
+    touch "{{ ansible_pull_logfile }}" \
+    chmod 640 "{{ ansible_pull_logfile }}" \
+'
+
+exec {{ ansible_pull_command }} &> >(sudo -u root -g adm tee -a "{{ ansible_pull_logfile }}" >/dev/null)
