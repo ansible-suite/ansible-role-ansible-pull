@@ -1,6 +1,7 @@
 [Unit]
 Description={{ job.name }} - initial setup
 Before=display-manager.service getty.target ansible-pull.service
+After=network-online.target
 ConditionPathExists=!{{ ansible_pull_initial_file }}
 
 [Service]
