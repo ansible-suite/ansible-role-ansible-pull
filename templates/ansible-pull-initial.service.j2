@@ -1,12 +1,13 @@
 [Unit]
 Description={{ job.name }} - initial setup
-Before=display-manager.service getty.target ansible-pull.service
-After=network-online.target
+Before=systemd-user-sessions.service
+Requires=network-online.target
 ConditionPathExists=!{{ ansible_pull_initial_file }}
 
 [Service]
 Type=oneshot
 ExecStartPre=-+/bin/plymouth display-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
+ExecStartPre=+/bin/systemctl start network-online.target
 ExecStart={{ job.job }}
 ExecStopPost=-+/bin/plymouth hide-message --text="{{ ansible_pull_initial_plymouth_messsage }}"
 User={{ ansible_pull_user }}

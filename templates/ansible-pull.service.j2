@@ -1,6 +1,7 @@
 [Unit]
 Description={{ job.name }}
 After=network-online.target
+Requires=network-online.target
 
 [Service]
 ExecStart={{ job.job }}
