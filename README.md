@@ -6,7 +6,7 @@ Configure a remote machine to run `ansible-pull` on a schedule. `ansible` will b
 Requirements
 ------------
 
-- cron
+- cron or systemd
 - logrotate
 
 Role Variables
