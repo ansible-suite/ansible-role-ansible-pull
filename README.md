@@ -26,7 +26,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 | `ansible_pull_vault_password_file` | `{{ ansible_pull_home }}/vault` | File to hold Ansible vault key. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
 | `ansible_pull_vault_password` | `SuperSecretKey` | Vault key, in plain text, that will be inserted into `{{ ansible_pull_vault_password_file }}`. **Not recommonded unless you aware of the implications of storing keys in clear text on remote hosts, or you are using a script to get the secret from an external source.** |
 | `ansible_pull_ssh_private_key` | [see `defaults/main.yml`] | Optionally define an SSH private key that will be installed for `{{ ansible_pull_user }}` on the remote host. If this is not defined, a new key will be generated and the public SSH key will be output at the end of the play. |
-| `ansible_known_hosts` | `[]` | List of SSH host keys to add to `known_hosts` for `{{ ansible_pull_user }}`. |
+| `ansible_pull_known_hosts` | `[]` | List of SSH host keys to add to `known_hosts` for `{{ ansible_pull_user }}`. |
 | `ansible_pull_cron_job` | [see `defaults/main.yml`] | Configuration for a job that runs `ansible-pull`. The default settings run `ansible-pull` every 30 minutes. |
 | `ansible_pull_user` | `ansible` | User that will run `ansible-pull`. |
 | `ansible_pull_group` | `ansible` | Group for `{{ ansible_pull_user }}`. |
