@@ -39,7 +39,7 @@ At a minimum, you need to define `ansible_pull_repo` where your Ansible playbook
 Dependencies
 ------------
 
-- samdoran.repo_epel
+- samdoran.repo_epel (only with RedHat-based distribution)
 
 Example Playbook
 ----------------
@@ -60,7 +60,7 @@ Here is a playbook using an internal GitLab server with the `pull.yml` playbook.
 
       roles:
         - samdoran.repo_epel
-        - samdoran.ansible_pull
+        - ansible_pull
 
 License
 -------
