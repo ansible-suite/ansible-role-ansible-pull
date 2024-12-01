@@ -1,6 +1,6 @@
 galaxy_info:
   role_name: ansible_pull
-  author: Sam Doran
+  author: Sam Doran and Hynek V. Svobodny
   description: Setup Ansible Pull using Ansible in push mode
   company: ~
   license: Apache 2.0
@@ -12,10 +12,11 @@ galaxy_info:
         - 7
         - 8
 
-    # - name: Ubuntu
-    #   versions:
+    - name: Ubuntu
+      versions:
     #     - precise
     #     - trusty
+        - jammy
 
   galaxy_tags:
     - ansible
