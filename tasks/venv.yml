@@ -1,20 +1,7 @@
-- name: Upgrade pip inside virtual environment
-  pip:
-    name: pip
-    state: latest
-    virtualenv: "{{ ansible_pull_venv_dir }}"
-  tags:
-    - ansible_pull
-    - packages
-    - pip
-
-- name: Install Python packages
-  pip:
-    name: "{{ item }}"
-    state: latest
-    virtualenv: "{{ ansible_pull_venv_dir }}"
-  loop: "{{ ansible_pull_pip_packages }}"
-  tags:
-    - ansible_pull
-    - packages
-    - pip
+- name: Use the python_virtualenv role to install Python packages in a virtual environment
+  include_role:
+    name: python_virtualenv
+  vars:
+    python_virtualenv_dir: "{{ ansible_pull_venv_dir }}"
+    python_virtualenv_packages: "{{ ansible_pull_pip_packages }}"
+    python_virtualenv_upgrade_pip: true
