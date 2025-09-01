@@ -49,7 +49,7 @@ ansible_pull_cfg_defaults:
     roles_path: "{{ ansible_pull_home }}/roles:{{ ansible_pull_workdir }}/roles"
     collections_path: "{{ ansible_pull_home }}/collections:{{ ansible_pull_workdir }}/collections"
     local_tmp: "{{ ansible_pull_home }}/tmp"
-    host_key_checking: False
+    host_key_checking: false
 
 ansible_pull_cron_job_defaults:
   name: Run ansible-pull

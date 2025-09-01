@@ -1,8 +1,8 @@
 - name: DEBIAN | Install needed packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ ansible_pull_packages }}"
-    state: latest
-    update_cache: yes
+    state: present
+    update_cache: true
   tags:
     - ansible_pull
     - packages

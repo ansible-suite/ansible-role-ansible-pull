@@ -1,15 +1,15 @@
 - name: Create system group '{{ ansible_pull_group }}'
-  group:
+  ansible.builtin.group:
     name: "{{ ansible_pull_group }}"
     system: true
     state: present
   when: ansible_pull_user != 'root'
   tags:
     - ansible_pull
-    - ansible_pull_user 
+    - ansible_pull_user
 
 - name: Create system user '{{ ansible_pull_user }}'
-  user:
+  ansible.builtin.user:
     name: "{{ ansible_pull_user }}"
     system: true
     group: "{{ ansible_pull_group }}"
@@ -23,7 +23,7 @@
     - ansible_pull_user
 
 - name: Copy sudoers settings for {{ ansible_pull_user }}
-  template:
+  ansible.builtin.template:
     src: ansible-sudoers.j2
     dest: /etc/sudoers.d/ansible-pull
     owner: root

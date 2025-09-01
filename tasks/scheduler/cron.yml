@@ -1,14 +1,14 @@
 - name: Start and enable {{ ansible_pull_scheduler }}
-  service:
+  ansible.builtin.service:
     name: "{{ ansible_pull_scheduler }}"
-    enabled: yes
+    enabled: true
     state: started
   tags:
     - ansible_pull
     - ansible_pull_scheduler
 
 - name: Create cron job to run ansible-pull
-  cron:
+  ansible.builtin.cron:
     name: "{{ ansible_pull_cron_job.name }}"
     minute: "{{ ansible_pull_cron_job.minute }}"
     hour: "{{ ansible_pull_cron_job.hour }}"

@@ -1,11 +1,14 @@
-- hosts: all
-  become: yes
+- name: Test the role
+  hosts: all
+  become: true
 
   tasks:
-    - debug:
+    - name: Print informational message
+      ansible.builtin.debug:
         msg: >-
           Testing with Ansible {{ ansible_version.full }} using Python {{ ansible_facts.python_version }}
           on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}
 
-    - import_role:
-        name: ansible_pull
+    - name: Import the tested role
+      ansible.builtin.import_role:
+        name: ansible-suite.ansible-pull

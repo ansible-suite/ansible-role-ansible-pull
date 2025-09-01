@@ -1,5 +1,5 @@
 - name: Use the python_virtualenv role to install Python packages in a virtual environment
-  include_role:
+  ansible.builtin.include_role:
     name: python_virtualenv
   vars:
     python_virtualenv_dir: "{{ ansible_pull_venv_dir }}"
