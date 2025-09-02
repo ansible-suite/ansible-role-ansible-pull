@@ -1,7 +1,7 @@
 - name: RHEL | Install needed packages
-  yum:
+  ansible.builtin.dnf:
     name: "{{ ansible_pull_packages }}"
-    state: latest
+    state: present
   tags:
     - ansible_pull
     - packages

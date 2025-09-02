@@ -1,5 +1,5 @@
 - name: Include distribution specific variables
-  include_vars: "{{ lookup('first_found', params) }}"
+  ansible.builtin.include_vars: "{{ lookup('first_found', params) }}"
   vars:
     params:
       files:
@@ -17,7 +17,8 @@
     - yum
     - apt
 
-- include_tasks: "install/{{ ansible_facts.os_family }}.yml"
+- name: Include distribution specific tasks
+  ansible.builtin.include_tasks: "install/{{ ansible_facts.os_family }}.yml"
   tags:
     - ansible_pull
     - packages
@@ -25,13 +26,13 @@
     - apt
 
 - name: Set up user to run ansible-pull as
-  include_tasks: user.yml
+  ansible.builtin.include_tasks: user.yml
   tags:
     - ansible_pull
     - ansible_pull_user
 
 - name: Create directory for Ansible repository
-  file:
+  ansible.builtin.file:
     dest: "{{ ansible_pull_workdir }}"
     state: directory
     owner: "{{ ansible_pull_user }}"
@@ -41,30 +42,30 @@
     - ansible_pull
 
 - name: Set up Python virtual environment with necessary packages
-  include_tasks: venv.yml
+  ansible.builtin.include_tasks: venv.yml
   tags:
     - ansible_pull
     - packages
     - pip
 
 - name: Set up SSH for access to the repository
-  include_tasks: ssh.yml
+  ansible.builtin.include_tasks: ssh.yml
   tags:
     - ansible_pull
     - ansible_pull_ssh
 
 - name: Create configuration files
-  include_tasks: config.yml
+  ansible.builtin.include_tasks: config.yml
   tags:
     - ansible_pull
 
 - name: Create job to periodiclly run ansible-pull
-  include_tasks: job.yml
+  ansible.builtin.include_tasks: job.yml
   tags:
     - ansible_pull
 
 - name: Display SSH public key
-  debug:
+  ansible.builtin.debug:
     msg: "Here is the public key that needs to be placed on the remote git server: {{ _ssh_key_generation.public_key }}"
   when: _ssh_key_generation is changed and ansible_pull_ssh_key_mgmt is not defined
   tags:

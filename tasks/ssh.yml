@@ -1,5 +1,5 @@
 - name: Create .ssh folder for {{ ansible_pull_user }}
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_pull_ssh_dir }}"
     state: directory
     owner: "{{ ansible_pull_user }}"
@@ -10,7 +10,7 @@
     - ansible_pull_ssh
 
 - name: Generate SSH key for {{ ansible_pull_user }}
-  openssh_keypair:
+  community.crypto.openssh_keypair:
     path: "{{ ansible_pull_ssh_key_file }}"
     size: 3072
     regenerate: never
@@ -23,14 +23,15 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- include_tasks: key_mgmt/{{ ansible_pull_ssh_key_mgmt }}.yml
+- name: Upload the public key as authorized on git platform '{{ ansible_pull_ssh_key_mgmt }}'
+  ansible.builtin.include_tasks: key_mgmt/{{ ansible_pull_ssh_key_mgmt }}.yml
   when: _ssh_key_generation is not skipped and ansible_pull_ssh_key_mgmt is defined
   tags:
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Copy SSH private key for {{ ansible_pull_user }}
-  template:
+- name: Copy SSH private key for user '{{ ansible_pull_user }}'
+  ansible.builtin.template:
     src: id_rsa.j2
     dest: "{{ ansible_pull_ssh_key_file }}"
     owner: "{{ ansible_pull_user }}"
@@ -41,8 +42,8 @@
     - ansible_pull
     - ansible_pull_ssh
 
-- name: Copy SSH public key for {{ ansible_pull_user }}
-  template:
+- name: Copy SSH public key for user '{{ ansible_pull_user }}'
+  ansible.builtin.template:
     src: id_rsa.pub.j2
     dest: "{{ ansible_pull_ssh_key_file }}.pub"
     owner: "{{ ansible_pull_user }}"
@@ -54,7 +55,7 @@
     - ansible_pull_ssh
 
 - name: Add host keys to known_hosts
-  known_hosts:
+  ansible.builtin.known_hosts:
     path: "{{ ansible_pull_ssh_dir }}/known_hosts"
     name: "{{ item.name }}"
     key: "{{ item.key }}"
